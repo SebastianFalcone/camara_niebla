@@ -1,7 +1,7 @@
 #!/bin/bash
 
-stty -F /dev/ttyACM0 115200
-
+#stty -F /dev/ttyACM0 115200
+stty -F /dev/ttyACM0 9600
 echo_time() 
 {
     echo `date "+%s"` "$@"

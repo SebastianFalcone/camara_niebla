@@ -1,8 +1,20 @@
-#define ledPin LED_BUILTIN
+#define LED_PIN LED_BUILTIN
 
-int ThermistorPin = A0;
+#include "DHT.h"
+#include "Adafruit_Sensor.h"
+
+#define DHT_PIN 33
+#define DHT_TYPE DHT11
+
+DHT dht(DHT_PIN, DHT_TYPE);
+
+float temp, hum; 
+
+#define TERMISTOR_PIN A0
 
 volatile byte state = LOW;
+
+
 
 int Vo;
 float R1 = 10000; // value of R1 on board
@@ -13,8 +25,9 @@ int cont = 0;
  
 void setup() 
 {
-	Serial.begin(115200);
-	pinMode(ledPin, OUTPUT);
+	Serial.begin(9600);
+  	dht.begin();	
+	pinMode(LED_PIN, OUTPUT);
    	TIMSK2 = (TIMSK2 & B11111110) | 0x01;
    	TCCR2B = (TCCR2B & B11111000) | 0x07;
 }
@@ -22,23 +35,30 @@ void setup()
  
 void loop() 
 {
-	digitalWrite(ledPin, state);
-	Vo = analogRead(ThermistorPin);
+	delay(1000);
+
+ 	hum = dht.readHumidity();
+	temp = dht.readTemperature();
+
+	digitalWrite(LED_PIN, state);
+	Vo = analogRead(TERMISTOR_PIN);
   	R2 = R1 * (1023.0 / (float)Vo - 1.0); //calculate resistance on thermistor
   	logR2 = log(R2);
   	T = (1.0 / (c1 + c2*logR2 + c3*logR2*logR2*logR2)); // temperature in Kelvin
   	T = T - 273.15; //convert Kelvin to Celcius	
+
 }
- 
- 
+
 ISR(TIMER2_OVF_vect)
 {
 
 	cont++;
     
-	if(cont == 100)
+	if(cont == 200)
 	{
 		Serial.println(T);
+		Serial.println(hum);
+		Serial.println(temp);
 		state = !state;
 		cont = 0;
 	}
