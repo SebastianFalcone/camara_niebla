@@ -2,7 +2,7 @@ dir=$(PWD)
 
 ARDUINO_DIR	=/usr/share/arduino
 ARDUINO_PORT = /dev/ttyACM*
-BOARD_TAG     = mega2560
+BOARD_TAG     = uno
 USER_LIB_PATH = ~dir/libraries
 ARDUINO_LIBS = 
 
