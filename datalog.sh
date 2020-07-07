@@ -23,6 +23,8 @@ else
 	while true; 
 	do	
 		read X < /dev/ttyACM0 && echo_time "	" $X >> $1.txt 2>&1
+		#read X < /dev/ttyACM0
+		#echo_time "	" $X >> $1.txt
 
 		read -t 0.25 -N 1 input
 		if [[ $input = "q" ]] || [[ $input = "Q" ]]; 
