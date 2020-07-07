@@ -35,7 +35,7 @@ void setup()
  
 void loop() 
 {
-	delay(1000);
+
 
  	hum = dht.readHumidity();
 	temp = dht.readTemperature();
@@ -56,9 +56,13 @@ ISR(TIMER2_OVF_vect)
     
 	if(cont == 200)
 	{
-		Serial.println(T);
-		Serial.println(hum);
+		Serial.print("	");
+		Serial.print(T);
+		Serial.print("	");
+		Serial.print(hum);
+		Serial.print("	");
 		Serial.println(temp);
+
 		state = !state;
 		cont = 0;
 	}
