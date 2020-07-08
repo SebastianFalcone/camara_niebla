@@ -1,7 +1,13 @@
 #!/bin/bash
 
-#stty -F /dev/ttyACM0 115200
-stty -F /dev/ttyACM0 9600
+if [ $# == 1 ];
+then
+	stty -F /dev/ttyACM0 115200
+else
+	stty -F /dev/ttyACM0 $2
+fi
+
+
 echo_time() 
 {
     echo `date "+%s"` "$@"
@@ -11,7 +17,7 @@ if [ $# == 0 ];
 then 
 	echo ""
 	echo "Modo de uso del script:"
-	echo "./datalog.sh [nombre del archivo]"
+	echo "./datalog.sh [nombre del archivo] [baudrate]"
 else		
 	echo ""
 	echo "Iniciado el log de los datos en" `pwd`/$1".txt"
@@ -23,8 +29,6 @@ else
 	while true; 
 	do	
 		read X < /dev/ttyACM0 && echo_time "	" $X >> $1.txt 2>&1
-		#read X < /dev/ttyACM0
-		#echo_time "	" $X >> $1.txt
 
 		read -t 0.25 -N 1 input
 		if [[ $input = "q" ]] || [[ $input = "Q" ]]; 
