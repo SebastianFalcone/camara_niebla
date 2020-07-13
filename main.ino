@@ -21,13 +21,19 @@ float temp_digital, hum_digital;
 ////////////////////////////////////////////////////
 #define TERMISTOR_PIN A0
 
+//VARIABLES DE LECTURA DEL SENSOR ANALOGICO//
 int Vo;
-float logR2, R2, temp_analogica;
+float R2, temp_analogica;
 
+//VALOR DE LA RESISTENCIA INTERNA DEL ARDUINO
 const int R1 = 10000;
+
+//COSTANTES DE PARAMETRIZACION DE LA CURVA DEL SENSOR//
 const float c1 = 0.001129148, c2 = 0.000234125, c3 = 0.0000000876741; 
 
 
+//VARIABLE DE LA INTERRUPT
+int cont = 0;
 
 
 ////////////////////
@@ -35,13 +41,23 @@ const float c1 = 0.001129148, c2 = 0.000234125, c3 = 0.0000000876741;
 //////////////////// 
 void setup() 
 {
+	//Velocidad de escritura al puerto serie (recordar ajustar en el script)
 	Serial.begin(115200);
+
+	//inicio el sensor de temperatura+humedad
   	dht.begin();	
 
 	pinMode(LED_PIN, OUTPUT);
    	
+	//Configuro la interrupcion por timer overflow
    	TIMSK2 = (TIMSK2 & B11111110) | 0x01;
+
+	//Configuro el clock div para el timmer
    	TCCR2B = (TCCR2B & B11111000) | 0x07;
+
+	//La formula para determinar cada cuanto se hace una interrupcion es 1/Clock-Speed * 2^n * clock_div
+	//Clock Speed = 16Mhz en el arduino mega y uno
+	//n -> 8 para el timer 0 y 2... 16 para el timer 1  
 
 }//SETUP
  
@@ -63,7 +79,7 @@ void loop()
   	R2 = R1 * (1023.0 / (float)Vo - 1.0); 
   	
   	// temperature EN Cº
-  	temp_analogica = (1.0 / (c1 + c2*logR2 + c3*pow(log(R2), 3))) - 273.15; 
+  	temp_analogica = (1.0 / (c1 + c2*log(R2) + c3*pow(log(R2), 3))) - 273.15; 
 
 	//USO EL PIN DE LA PLACA PARA VERIFICAR SI SE ENVIO DATA. 
 	//SU ESTADO CAMBIA CADA VEZ QUE ENTRO AL INTERRUPT
@@ -71,38 +87,19 @@ void loop()
 
 }//LOOP
 
+//RUTINA DE LA INTERRUPCION DEL TIMER 2
+//Como la interrupcion se hace cada 16.384mS (en esta configuracion), cuento hasta 61 para que la lectura se haga cada 1 segundo
 ISR(TIMER2_OVF_vect)
 {
-	int cont;
 	cont++;
     
-	if(cont == 200)
+	if(cont == 61)
 	{
-		Serial.print("	");
+		Serial.print("  ");
 		Serial.print(temp_analogica);
-		Serial.print("	");
+		Serial.print("  ");
 		Serial.print(hum_digital);
-		Serial.print("	");
-		Serial.println(temp_digital);
-
-		state = !state;
-		cont = 0;
-	}
-
-}//TIMER 2
-
-ISR(TIMER1_OVF_vect)
-{
-	int cont;
-	cont++;
-    
-	if(cont == 200)
-	{
-		Serial.print("	");
-		Serial.print(temp_analogica);
-		Serial.print("	");
-		Serial.print(hum_digital);
-		Serial.print("	");
+		Serial.print("  ");
 		Serial.println(temp_digital);
 
 		state = !state;
