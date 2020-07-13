@@ -27,8 +27,8 @@ float logR2, R2, temp_analogica;
 const int R1 = 10000;
 const float c1 = 0.001129148, c2 = 0.000234125, c3 = 0.0000000876741; 
 
-
-
+//Contador usado en el timer
+int cont = 0;
 
 ////////////////////
 //INICIA LA FIESTA//
@@ -73,7 +73,6 @@ void loop()
 
 ISR(TIMER2_OVF_vect)
 {
-	int cont;
 	cont++;
     
 	if(cont == 200)
