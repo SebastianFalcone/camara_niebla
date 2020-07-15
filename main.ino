@@ -43,6 +43,10 @@ void setup()
    	TIMSK2 = (TIMSK2 & B11111110) | 0x01;
    	TCCR2B = (TCCR2B & B11111000) | 0x07;
 
+	//La formula para determinar cada cuanto se hace una interrupcion es 1/Clock-Speed * 2^n * clock_div
+	//Clock Speed = 16Mhz en el arduino mega y uno
+	//n -> 8 para el timer 0 y 2... 16 para el timer 1  
+
 }//SETUP
  
  
@@ -73,26 +77,6 @@ void loop()
 
 ISR(TIMER2_OVF_vect)
 {
-	cont++;
-    
-	if(cont == 200)
-	{
-		Serial.print("	");
-		Serial.print(temp_analogica);
-		Serial.print("	");
-		Serial.print(hum_digital);
-		Serial.print("	");
-		Serial.println(temp_digital);
-
-		state = !state;
-		cont = 0;
-	}
-
-}//TIMER 2
-
-ISR(TIMER1_OVF_vect)
-{
-	int cont;
 	cont++;
     
 	if(cont == 200)
