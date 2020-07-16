@@ -1,6 +1,6 @@
 
-#include "DHT.h"
-#include "Adafruit_Sensor.h"
+#include <DHT.h>
+#include <Adafruit_Sensor.h>
 
 
 #define LED_PIN LED_BUILTIN
