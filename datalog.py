@@ -30,10 +30,10 @@ while True:
         #Leo el stream de datos proveniente del arduino
         data = ser.readline()         
 
-        #Si solo existe una linea (archivo vacio) pongo los headers
-        if line == 1:
+	#Si solo existe una linea (archivo vacio) pongo los headers
+        if line == 0:
             print("Poniendo Headers")
-            file.write("Timestamp TempAnalog TempDig HumDig \n")
+            file.write("timestamp temp_analog hum_digital temp_digital \n")
         
         else:
             print("Linea " + str(line-1) + ":") 
@@ -49,8 +49,11 @@ while True:
             file.write(str(int(time.time())) + data)    
             file.flush()
 
-        #Esto no es tan necesario pero es para ir llevando un registro de cuantas lineas van escritas
-        line = line + 1
+	#Veo que el archivo siga abierto	
+	file = open(fileName, "a+");
+
+        #Registro de cuantas lineas hay escritas
+        line = len(file.readlines())
     
     except:
         print("Programa finalizado!")
