@@ -80,6 +80,7 @@ ISR(TIMER2_OVF_vect)
     
 	if(cont == 60)
 	{
+		//ESTA MAL USAR SERIAL PRINTS EN LAS INTERRUPCIONES
 		Serial.print(" ");
 		Serial.print(temp_analogica);
 		Serial.print(" ");
